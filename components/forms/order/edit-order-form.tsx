@@ -1,36 +1,16 @@
-/* eslint-disable react/no-children-prop */
 "use client";
 import { z } from "zod";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "sonner";
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
-  Drawer,
   DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "../../ui/drawer";
 import { Button } from "../../ui/button";
 import { Separator } from "../../ui/separator";
-import { Spinner } from "../../ui/spinner";
-import { IconPlus } from "@tabler/icons-react";
-import { Field, FieldError, FieldGroup, FieldLabel } from "../../ui/field";
-import { Input } from "../../ui/input";
-import { useForm } from "@tanstack/react-form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
-import { createOrder } from "@/server/order";
-import { authClient } from "@/lib/auth-client";
 import { schema } from "@/app/orders/columns";
 
 export default function EditOrderForm({
@@ -52,6 +32,7 @@ export default function EditOrderForm({
       </DrawerHeader>
       <div className="flex flex-col gap-4 overflow-y-auto px-4">
         {item.orderNumber}
+        <Separator className="sm:sr-only" />
       </div>
       <DrawerFooter>
         <Button type="submit" onClick={onSubmit} form="create-order-form">

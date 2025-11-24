@@ -197,6 +197,7 @@ export default function CreateItemForm({ orderId }: { orderId: string }) {
               />
             </FieldGroup>
           </form>
+          <Separator className="sm:sr-only" />
         </div>
         <DrawerFooter>
           <Button type="submit" form="create-order-form">

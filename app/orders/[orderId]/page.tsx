@@ -15,8 +15,6 @@ export default async function OrderPage({ params }: { params: Params }) {
   const { orderId } = await params;
   const { order } = await getOrderById(orderId);
 
-  console.log(order);
-
   const breadcrumbs: BreadcrumbItem[] = [
     {
       title: "Orders",

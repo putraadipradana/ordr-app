@@ -74,6 +74,7 @@ export function ProfileDetailDrawer({
         <div className="py-4">
           <span className="font-medium text-sm">Recent order</span>
         </div>
+        <Separator className="sm:sr-only" />
       </div>
       <DrawerFooter>
         <DrawerClose asChild>

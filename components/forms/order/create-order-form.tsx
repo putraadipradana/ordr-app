@@ -236,6 +236,7 @@ export default function CreateOrderForm() {
               />
             </FieldGroup>
           </form>
+          <Separator className="sm:sr-only" />
         </div>
         <DrawerFooter>
           <Button type="submit" form="create-order-form">
