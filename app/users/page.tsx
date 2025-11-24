@@ -6,6 +6,8 @@ import { columns } from "./columns";
 import { getUsers } from "@/server/user";
 import { BreadcrumbItem } from "@/types";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
   const breadcrumbs: BreadcrumbItem[] = [
     {

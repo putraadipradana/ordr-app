@@ -11,6 +11,8 @@ type Params = Promise<{
   orderId: string;
 }>;
 
+export const dynamic = "force-dynamic";
+
 export default async function OrderPage({ params }: { params: Params }) {
   const { orderId } = await params;
   const { order } = await getOrderById(orderId);
