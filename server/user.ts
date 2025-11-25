@@ -65,5 +65,7 @@ export const getUsers = async () => {
         orderBy: [desc(user.createdAt)]
     })
 
+    // await new Promise((resolve) => setTimeout((resolve), 5000))
+
     return response
 }

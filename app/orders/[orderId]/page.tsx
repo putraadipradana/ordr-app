@@ -11,22 +11,22 @@ type Params = Promise<{
   orderId: string;
 }>;
 
+const breadcrumbs: BreadcrumbItem[] = [
+  {
+    title: "Orders",
+    href: "/orders",
+  },
+  {
+    title: "Materials",
+    href: "/orders",
+  },
+];
+
 export const dynamic = "force-dynamic";
 
-export default async function OrderPage({ params }: { params: Params }) {
+export default async function Page({ params }: { params: Params }) {
   const { orderId } = await params;
   const { order } = await getOrderById(orderId);
-
-  const breadcrumbs: BreadcrumbItem[] = [
-    {
-      title: "Orders",
-      href: "/orders",
-    },
-    {
-      title: `${order?.orderNumber}`,
-      href: "/orders",
-    },
-  ];
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>

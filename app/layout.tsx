@@ -3,8 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { Suspense } from "react";
-import Loading from "@/components/loading";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +35,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Suspense fallback={<Loading />}>{children}</Suspense>
+          {children}
         </ThemeProvider>
         <Toaster />
       </body>
