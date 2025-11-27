@@ -30,10 +30,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { deleteOrder } from "@/server/order";
+import { deleteOrder, updateOrder } from "@/server/order";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,6 +47,8 @@ import {
 import EditOrderForm from "@/components/forms/order/edit-order-form";
 import { Drawer } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Order } from "@/db/schema";
+import { getErrorMessage } from "@/lib/handle-error";
 
 export const schema = z.object({
   id: z.string(),
@@ -105,7 +107,7 @@ export const columns: ColumnDef<z.infer<typeof schema>>[] = [
       <Badge variant="outline" className="py-1 [&>svg]:size-3.5">
         {row.original.status === "done" ? (
           <CircleCheck />
-        ) : row.original.status === "On Progress" ? (
+        ) : row.original.status === "on progress" ? (
           <Timer />
         ) : (
           <Circle />
@@ -179,7 +181,7 @@ function TableActions({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile();
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [status, setStatus] = useState("not started");
+  const [isUpdatePending, startUpdateTransition] = useTransition();
 
   const handleDelete = async () => {
     try {
@@ -260,10 +262,27 @@ function TableActions({ item }: { item: z.infer<typeof schema> }) {
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuRadioGroup
-                  value={status}
-                  onValueChange={setStatus}
+                  value={item.status}
+                  onValueChange={(value) => {
+                    startUpdateTransition(() => {
+                      toast.promise(
+                        updateOrder({
+                          id: item.id,
+                          status: value as Order["status"],
+                        }),
+                        {
+                          loading: "Updating...",
+                          success: "Status updated",
+                          error: (err) => getErrorMessage(err),
+                        }
+                      );
+                    });
+                  }}
                 >
-                  <DropdownMenuRadioItem value="not started">
+                  <DropdownMenuRadioItem
+                    value="not started"
+                    disabled={isUpdatePending}
+                  >
                     Not started
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="on progress">

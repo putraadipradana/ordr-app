@@ -39,6 +39,7 @@ import {
 } from "./ui/alert-dialog";
 import { useState } from "react";
 import { auth } from "@/lib/auth";
+import Link from "next/link";
 
 type Sessions = typeof auth.$Infer.Session;
 
@@ -131,7 +132,8 @@ export function NavUser({ session }: { session: Sessions | null }) {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem className="relative">
+                  <Link href={"/account"} className="absolute inset-0" />
                   <IconUserCircle />
                   Account
                 </DropdownMenuItem>

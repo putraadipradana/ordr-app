@@ -2,7 +2,11 @@
 
 import { db } from "@/db/drizzle";
 import { InsertOrder, orders } from "@/db/schema";
+import { takeFirstOrThrow } from "@/db/utils";
+import { getErrorMessage } from "@/lib/handle-error";
+import { UpdateOrderSchema } from "@/lib/validations";
 import { eq } from "drizzle-orm"
+import { updateTag } from "next/cache";
 
 export const createOrder = async (values: InsertOrder) => {
     try {
@@ -30,7 +34,8 @@ export const getOrders = async () => {
                     name: true
                 }
             }
-        }
+        },
+        orderBy: (orders, { desc }) => [desc(orders.createdAt)]
     })
 
     // await new Promise((resolve) => setTimeout((resolve), 5000))
@@ -68,15 +73,6 @@ export const getOrderById = async (id: string) => {
     }
 }
 
-export const updateOrder = async (values: InsertOrder) => {
-    try {
-        await db.update(orders).set(values).where(eq(orders.id, orders.id));
-        return { success: true, message: "Order updated successfully" };
-    } catch {
-        return { success: false, message: "Failed to update order" };
-    }
-};
-
 export const deleteOrder = async (id: string) => {
     await db.delete(orders).where(eq(orders.id, id))
 
@@ -89,5 +85,39 @@ export const setOrderStatus = async (id: string) => {
         return { success: true, message: "Item created successfully" };
     } catch {
         return { success: false, message: "Failed to create item" };
+    }
+}
+
+export async function updateOrder(input: UpdateOrderSchema & { id: string }) {
+    try {
+        const data = await db.update(orders).set({
+            orderNumber: input.orderNumber,
+            name: input.name,
+            status: input.status,
+            priority: input.priority,
+            amount: input.priority
+        }).where(eq(orders.id, input.id)).returning({
+            status: orders.status,
+            priority: orders.priority,
+        }).then(takeFirstOrThrow)
+
+        updateTag("order")
+        if (data.status === input.status) {
+            updateTag("order-status-counts")
+        }
+
+        if (data.priority === input.priority) {
+            updateTag("order-priority-counts");
+        }
+
+        return {
+            data: null,
+            error: null,
+        };
+    } catch (err) {
+        return {
+            data: null,
+            error: getErrorMessage(err),
+        };
     }
 }
