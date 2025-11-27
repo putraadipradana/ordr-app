@@ -25,6 +25,7 @@ import { signInUser } from "@/server/user";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth-client";
 
 const formSchema = z.object({
   email: z.email(),
@@ -62,6 +63,13 @@ export function LoginForm({
       }
     },
   });
+
+  const handleLoginWithGoogle = async () => {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/dashboard",
+    });
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -143,6 +151,13 @@ export function LoginForm({
               <Field>
                 <Button type="submit" disabled={isLoading}>
                   {isLoading ? <Spinner /> : "Login"}
+                </Button>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleLoginWithGoogle}
+                >
+                  Login with Google
                 </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}

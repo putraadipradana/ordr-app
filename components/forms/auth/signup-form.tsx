@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth-client";
 import { signUpUser } from "@/server/user";
 import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
@@ -66,6 +67,14 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       }
     },
   });
+
+  const handleLoginWithGoogle = async () => {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/dashboard",
+    });
+  };
+
   return (
     <Card {...props}>
       <CardHeader>
@@ -201,6 +210,13 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               <Field>
                 <Button type="submit" disabled={isLoading}>
                   {isLoading ? <Spinner /> : "Create Account"}
+                </Button>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleLoginWithGoogle}
+                >
+                  Sign up with Google
                 </Button>
                 <FieldDescription className="px-6 text-center">
                   Already have an account? <Link href="/login">Sign in</Link>
